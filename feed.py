@@ -5,13 +5,14 @@ import xml.etree.ElementTree as  xml_tree
 with open ('feed.yaml', 'r') as file:
     yaml_data = yaml.safe_load(file)
 
-#Writing the RSS Feed
-
-#Add element of time RSS
-rss_element = xml_tree.Element('rss', {'version':'2.0', 'xmlns:itunes':'http://www.itunes.com/dtds/podcast-1.0.dtd', 'xmlns:content':'http://purl.org/rss/1.0/modules/content'})
+    #Add element of time RSS
+    rss_element = xml_tree.Element('rss', {
+        'version':'2.0', 
+        'xmlns:itunes':'http://www.itunes.com/dtds/podcast-1.0.dtd', 
+        'xmlns:content':'http://purl.org/rss/1.0/modules/content/'
+    })
 
 #Create sub element inside the XML treee
-
 channel_element = xml_tree.SubElement(rss_element, 'channel')
 
 #Create the link prefix (My github page)
@@ -35,6 +36,26 @@ xml_tree.SubElement(channel_element, 'link').text = link_prefix
 
 #Creating a sub category tag which is stored in attributes
 xml_tree.SubElement(channel_element, 'itunes:category', {'text': yaml_data['category']})
+
+#Loop through all of the podcast episodes stored in 'item' tags
+for item in yaml_data['item']:
+    item_element = xml_tree.SubElement(channel_element, 'item')
+    xml_tree.SubElement(item_element, 'title'). text = item['title']
+    
+    #Add the Author tag for each item but just get it from the yaml_data rather than having to add it for each item
+    xml_tree.SubElement(item_element, 'itunes:author'). text = yaml_data['author']
+    
+    xml_tree.SubElement(item_element, 'description'). text = item['description']
+    xml_tree.SubElement(item_element, 'itunes:duration'). text = item['duration']
+    xml_tree.SubElement(item_element, 'pubdate'). text = item['published']
+
+    #Create enclosure tag. This contains the length of episode in bytes, the audio file and url
+    enclosure = xml_tree.SubElement(item_element, 'enclosure', {
+        'url': link_prefix + item['file'],
+        'type': 'audio/mpeg',
+        'length': item['length']
+    })
+
 
 
 #Create a variable to store the output
