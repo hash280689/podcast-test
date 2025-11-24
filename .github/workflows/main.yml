@@ -10,20 +10,26 @@ jobs:
     #splitting the step into sections with -name
     - name: Checkout Repo
       uses: actions/checkout@v3
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with: 
-        python-version: '3.10'
-    - name: Install Dependncies
-      run: | #run multiple terminal commands
-        python -m pip install --upgrade pip
-        pip install pyyaml
+    #Run the podcast generator
     - name: Run Feed Generator
-      run: python feed.py
-    - name: Push Repo
-      run: | #run set up like you're doing it on a new machine
-        git config user.name Maldoran Gaming
-        git config user.email maldoran.gaming@gmail.com
-        git add .
-        git commit -m "Modified Feed"
-        git push
+      #You can either run off a release or run straight from branch
+      uses: hash280689/podcast-generator@main
+    
+      #Below is the old implementation. This is now being done with the podcast generator
+    # - name: Setup Python
+    #   uses: actions/setup-python@v4
+    #   with: 
+    #     python-version: '3.10'
+    # - name: Install Dependncies
+    #   run: | #run multiple terminal commands
+    #     python -m pip install --upgrade pip
+    #     pip install pyyaml
+    # - name: Run Feed Generator
+    #   run: python feed.py
+    # - name: Push Repo
+    #   run: | #run set up like you're doing it on a new machine
+    #     git config user.name Maldoran Gaming
+    #     git config user.email maldoran.gaming@gmail.com
+    #     git add .
+    #     git commit -m "Modified Feed"
+    #     git push
